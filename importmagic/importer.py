@@ -117,11 +117,11 @@ class Imports(object):
 
     def add_import(self, name, alias=None):
         location = LOCATION_ORDER.index(self._index.location_for(name))
-        self._imports.add(Import(location, name, alias))
+        self._imports.add(Import(0, name, alias))
 
     def add_import_from(self, module, name, alias=None):
         location = LOCATION_ORDER.index(self._index.location_for(module))
-        self._imports_from[module].add(Import(location, name, alias))
+        self._imports_from[module].add(Import(0, name, alias))
 
     def remove(self, references):
         for imp in list(self._imports):
@@ -136,14 +136,6 @@ class Imports(object):
         groups = []
         for expected_location in range(len(LOCATION_ORDER)):
             out = StringIO()
-            for imp in sorted(self._imports):
-                if expected_location != imp.location:
-                    continue
-                out.write('import {module}{alias}\n'.format(
-                    module=imp.name,
-                    alias=' as {alias}'.format(alias=imp.alias) if imp.alias else '',
-                ))
-
             for module, imports in sorted(self._imports_from.items()):
                 imports = sorted(imports)
                 if not imports or expected_location != imports[0].location:
@@ -181,6 +173,14 @@ class Imports(object):
                 line += ', '.join(line_pieces) + (')\n' if paren_used else '\n')
                 if line.strip():
                     out.write(line)
+
+            for imp in sorted(self._imports):
+                if expected_location != imp.location:
+                    continue
+                out.write('import {module}{alias}\n'.format(
+                    module=imp.name,
+                    alias=' as {alias}'.format(alias=imp.alias) if imp.alias else '',
+                ))
 
             text = out.getvalue()
             if text:

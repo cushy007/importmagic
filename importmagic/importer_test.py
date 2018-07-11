@@ -57,10 +57,10 @@ def test_update_imports_inserts_initial_imports(index):
     assert unresolved == set(['os.path.basename', 'sys.path', 'basename', 'path.basename'])
     new_src = update_imports(src, index, unresolved, unreferenced)
     assert dedent("""
-        import os.path
-        import sys
         from os import path
         from os.path import basename
+        import os.path
+        import sys
 
 
         print(os.path.basename('sys/foo'))
@@ -107,14 +107,14 @@ def test_update_imports_correctly_aliases(index):
 
 def test_parse_imports(index):
     src = dedent('''
-        import os, sys as sys
-        import sys as sys
         from os.path import basename
 
         from os import (
             path,
             posixpath
             )
+        import os, sys as sys
+        import sys as sys
 
         def main():
             pass
@@ -184,8 +184,8 @@ def test_imports_dont_delete_imports_after_middle_comments(index):
     scope = Scope.from_source(src)
     new_src = update_imports(src, index, *scope.find_unresolved_and_unreferenced_symbols())
     assert dedent('''
-        import json
         from os.path import basename
+        import json
 
 
         def func(n):
