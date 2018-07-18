@@ -189,7 +189,7 @@ class Imports(object):
         start = self._tokens[self._imports_begin][2][0] - 1
         end = self._tokens[min(len(self._tokens) - 1, self._imports_end)][2][0] - 1
         if groups:
-            text = '\n'.join(groups) + '\n\n'
+            text = '\n'.join(groups) + '\n'
         else:
             text = ''
         return start, end, text
